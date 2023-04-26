@@ -1,86 +1,57 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { SharedTestingModule } from '@tmo/shared/testing';
+import { createReadingListItem, SharedTestingModule } from '@tmo/shared/testing';
 
 import { ReadingListComponent } from './reading-list.component';
 import { BooksFeatureModule } from '@tmo/books/feature';
+import { getReadingList, removeFromReadingList } from '@tmo/books/data-access';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { OverlayContainer } from '@angular/cdk/overlay';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('ReadingListComponent', () => {
   let component: ReadingListComponent;
   let fixture: ComponentFixture<ReadingListComponent>;
+  let store: MockStore;
+  let overlayContainerElement: HTMLElement;
+  let spyTest: any;
+  let oc: OverlayContainer;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [BooksFeatureModule, SharedTestingModule]
+      imports: [BooksFeatureModule, SharedTestingModule, NoopAnimationsModule],
+      providers: [provideMockStore({ initialState: { items: {} } })]
     }).compileComponents();
+    store = TestBed.inject(MockStore);
+    oc = TestBed.inject(OverlayContainer);
+    overlayContainerElement = oc.getContainerElement();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ReadingListComponent);
     component = fixture.componentInstance;
+    store.overrideSelector(getReadingList, []);
     fixture.detectChanges();
+    spyTest = spyOn(store, 'dispatch').and.callThrough();
+  });
+
+  afterEach(() => {
+    fixture.destroy();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-  describe('When: I add/remove books', () => {
-    beforeEach(() => {
-      cy.startAt('/');
-    });
 
-    it('Then: I should be able to undo', () => {
-      cy.get('[data-testing="toggle-reading-list"]').click();
-      cy.get('body').then((body) => {
-        if (body.find('[data-testing="remove-book-button"]').length > 0) {
-          cy.get('[data-testing="remove-book-button"]').each(button => {
-            cy.wrap(button)
-              .click();
-          });
-        }
-      });
-
-      cy.get('[data-testing="close-reading-list"]').click();
-      cy.get('input[type="search"]').type('javascript');
-
-      cy.get('form').submit();
-
-      cy.get('[data-testing="read-button"]').first().click();
-      cy.get('[data-testing="read-button"]').should('be.disabled')
-      cy.wait(1500);
-      cy.get('.mat-simple-snackbar-action').click();
-      cy.get('[data-testing="read-button"]').should('not.be.disabled')
-    });
+  it('should remove book from reading list', () => {
+    const book = createReadingListItem('B');
+    component.removeFromReadingList(book);
+    expect(store.dispatch).toHaveBeenCalledWith(removeFromReadingList({ item: book }));
   });
 
-  describe('When: I add/remove books', () => {
-    beforeEach(() => {
-      cy.startAt('/');
-    });
-
-    it('Then: I should be able to mark that as finished', () => {
-      cy.get('[data-testing="toggle-reading-list"]').click();
-      cy.get('body').then((body) => {
-        if (body.find('[data-testing="remove-book-button"]').length > 0) {
-          cy.get('[data-testing="remove-book-button"]').each(button => {
-            cy.wrap(button)
-              .click();
-          });
-        }
-      });
-
-      cy.get('[data-testing="close-reading-list"]').click();
-      cy.get('input[type="search"]').type('javascript');
-
-      cy.get('form').submit();
-
-      cy.get('[data-testing="read-button"]').first().click();
-      cy.get('[data-testing="toggle-reading-list"]').click();
-      cy.get('[data-testing="book-item"]').should('have.length.greaterThan', 1);
-      cy.get('[data-testing="finish-book-button"]').first().click();
-      cy.get('[data-testing="finish-book-text"]').should(
-        'contain.text',
-        'Finished on'
-      );
-    });
+  it('should mark a book as read', () => {
+    const book = createReadingListItem('A');
+    book.finished = true;
+    component.bookFinished(book);
+    expect(store.dispatch).toHaveBeenCalled();
   });
 });
