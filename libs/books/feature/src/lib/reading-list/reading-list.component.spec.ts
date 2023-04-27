@@ -1,4 +1,4 @@
-import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { SharedTestingModule } from '@tmo/shared/testing';
 
 import { ReadingListComponent } from './reading-list.component';
@@ -8,7 +8,7 @@ describe('ReadingListComponent', () => {
   let component: ReadingListComponent;
   let fixture: ComponentFixture<ReadingListComponent>;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [BooksFeatureModule, SharedTestingModule]
     }).compileComponents();
@@ -23,5 +23,4 @@ describe('ReadingListComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
 });
