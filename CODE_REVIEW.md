@@ -3,6 +3,7 @@
 - Error handling when there are no books for the search. (`Fixed`).
 - Written missing testcases.(`Fixed`)
 - Added header after search. (`Fixed`)
+- Lint warnings. (`Fixed`)
 #### Accessibility issues identified (Automated scan):
 - Buttons do not have an accessible name. (`Fixed`).
 #### Accessibility issues identified (Manually):
