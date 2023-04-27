@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { createReadingListItem, SharedTestingModule } from '@tmo/shared/testing';
 
 import { ReadingListComponent } from './reading-list.component';
@@ -16,7 +16,7 @@ describe('ReadingListComponent', () => {
   let spyTest: any;
   let oc: OverlayContainer;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [BooksFeatureModule, SharedTestingModule, NoopAnimationsModule],
       providers: [provideMockStore({ initialState: { items: {} } })]
