@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { createBook, SharedTestingModule } from '@tmo/shared/testing';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
@@ -16,7 +16,7 @@ describe('ProductsListComponent', () => {
   let overlayContainerElement: HTMLElement;
   let dispatchSpy;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [BooksFeatureModule, NoopAnimationsModule, SharedTestingModule],
       providers: [provideMockStore({ initialState: { books: { entities: [] } } }),]

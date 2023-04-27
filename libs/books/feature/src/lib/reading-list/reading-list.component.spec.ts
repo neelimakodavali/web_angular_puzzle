@@ -1,4 +1,5 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { SharedTestingModule } from '@tmo/shared/testing';
 import { createReadingListItem, SharedTestingModule } from '@tmo/shared/testing';
 
 import { ReadingListComponent } from './reading-list.component';
@@ -16,7 +17,7 @@ describe('ReadingListComponent', () => {
   let spyTest: any;
   let oc: OverlayContainer;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [BooksFeatureModule, SharedTestingModule, NoopAnimationsModule],
       providers: [provideMockStore({ initialState: { items: {} } })]
@@ -56,4 +57,5 @@ describe('ReadingListComponent', () => {
     expect(store.dispatch).toHaveBeenCalledWith(removeFromReadingList({ item: book }));
     expect(spyTest).toHaveBeenCalledWith(addToReadingList({book: {...book, id: 'B'}}));
   });
+
 });
